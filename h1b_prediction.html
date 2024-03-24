@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Isabel Yang">
+<meta name="dcterms.date" content="2023-12-11">
+
+<title>Final Exam</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="finalexam_files/libs/clipboard/clipboard.min.js"></script>
+<script src="finalexam_files/libs/quarto-html/quarto.js"></script>
+<script src="finalexam_files/libs/quarto-html/popper.min.js"></script>
+<script src="finalexam_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="finalexam_files/libs/quarto-html/anchor.min.js"></script>
+<link href="finalexam_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="finalexam_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="finalexam_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="finalexam_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="finalexam_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Final Exam</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Isabel Yang </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">December 11, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<section id="introduction" class="level1">
+<h1>Introduction</h1>
+<p>The h1b visa program is a critical pathway for skilled foreign workers to contribute their expertise to the U.S. workforce. This data analysis explores the 2017 h1b dataset and aims to supply an understanding of the information of the unveil pattern, providing insights for stakeholders. It comprises six distinct sections, data preparation, mumerical summary, visual summary, linear regression, linear regression diagnostics and Logistic regression. The overall objective is to determine if we can reasonably predict the processing time and likelihood of approval.</p>
+</section>
+<section id="data-preparation" class="level1">
+<h1>Data Preparation</h1>
+<section id="load-global-functions-and-data" class="level5">
+<h5 class="anchored" data-anchor-id="load-global-functions-and-data">Load Global Functions and Data</h5>
+<p>The analysis begin by loading essential packages, including tidyverse, ggplot2 (and more), which provide a set of functions for data manipulation and visualization.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ dplyr     1.1.3     ✔ readr     2.1.4
+✔ forcats   1.0.0     ✔ stringr   1.5.0
+✔ ggplot2   3.4.3     ✔ tibble    3.2.1
+✔ lubridate 1.9.3     ✔ tidyr     1.3.0
+✔ purrr     1.0.2     
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'reshape2'
+
+The following object is masked from 'package:tidyr':
+
+    smiths</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(caret)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: lattice
+
+Attaching package: 'caret'
+
+The following object is masked from 'package:purrr':
+
+    lift</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(forcats)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MASS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'MASS'
+
+The following object is masked from 'package:dplyr':
+
+    select</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix
+
+Attaching package: 'Matrix'
+
+The following objects are masked from 'package:tidyr':
+
+    expand, pack, unpack
+
+Loaded glmnet 4.1-8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pROC)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Type 'citation("pROC")' for a citation.
+
+Attaching package: 'pROC'
+
+The following objects are masked from 'package:stats':
+
+    cov, smooth, var</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: optionsSetup</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co">#| include=FALSE</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span>opts_chunk<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">message=</span><span class="cn">FALSE</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">echo=</span><span class="cn">FALSE</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="preliminary-data-exploration" class="level5">
+<h5 class="anchored" data-anchor-id="preliminary-data-exploration">Preliminary Data Exploration</h5>
+<p>For reference, this is how the orginal dataset looks like.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 312,322
+Columns: 53
+$ ...1                        &lt;dbl&gt; 346361, 268657, 54363, 402221, 370773, 441…
+$ CASE_NUMBER                 &lt;chr&gt; "I-200-17076-215306", "I-200-17067-247998"…
+$ CASE_STATUS                 &lt;chr&gt; "CERTIFIED", "CERTIFIED", "CERTIFIED", "CE…
+$ CASE_SUBMITTED              &lt;date&gt; 2017-03-17, 2017-03-08, 2016-11-18, 2017-…
+$ DECISION_DATE               &lt;date&gt; 2017-03-23, 2017-03-14, 2016-11-25, 2017-…
+$ VISA_CLASS                  &lt;chr&gt; "H-1B", "H-1B", "H-1B", "H-1B", "H-1B", "H…
+$ EMPLOYMENT_START_DATE       &lt;date&gt; 2017-09-13, 2017-09-07, 2016-11-24, 2017-…
+$ EMPLOYMENT_END_DATE         &lt;date&gt; 2020-09-12, 2020-09-06, 2019-11-23, 2020-…
+$ EMPLOYER_NAME               &lt;chr&gt; "KNACK SYSTEMS LLC", "DELTA PRODUCTS CORPO…
+$ EMPLOYER_BUSINESS_DBA       &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+$ EMPLOYER_ADDRESS            &lt;chr&gt; "1 WOODBRIDGE CENTER", "46101 FREMONT BLVD…
+$ EMPLOYER_CITY               &lt;chr&gt; "WOODBRIDGE", "FREMONT", "CHICAGO", "SAN J…
+$ EMPLOYER_STATE              &lt;chr&gt; "NJ", "CA", "IL", "CA", "TX", "IL", "CA", …
+$ EMPLOYER_POSTAL_CODE        &lt;chr&gt; "07095", "94538", "60601", "95131", "75062…
+$ EMPLOYER_COUNTRY            &lt;chr&gt; "UNITED STATES OF AMERICA", "UNITED STATES…
+$ EMPLOYER_PROVINCE           &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+$ EMPLOYER_PHONE              &lt;dbl&gt; 7325960110, 5106685100, 3126930161, 408855…
+$ EMPLOYER_PHONE_EXT          &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+$ AGENT_REPRESENTING_EMPLOYER &lt;chr&gt; "Y", "Y", "Y", "Y", "Y", "N", "Y", "Y", "Y…
+$ AGENT_ATTORNEY_NAME         &lt;chr&gt; "VELASCO, MICHELLE", "LEE, WENGLIN", "GUPT…
+$ AGENT_ATTORNEY_CITY         &lt;chr&gt; "NEW YORK", "FREMONT", "CHICAGO", "SANTA C…
+$ AGENT_ATTORNEY_STATE        &lt;chr&gt; "NY", "CA", "IL", "CA", "TX", NA, "MA", "C…
+$ JOB_TITLE                   &lt;chr&gt; "CRM CONSULTANT", "BUSINESS ANALYST", "COM…
+$ SOC_CODE                    &lt;chr&gt; "15-1132", "15-1121", "15-1199", "15-1121"…
+$ SOC_NAME                    &lt;chr&gt; "SOFTWARE DEVELOPERS, APPLICATIONS", "COMP…
+$ NAICS_CODE                  &lt;dbl&gt; 541512, 334111, 5416, 541512, 541511, 5415…
+$ TOTAL_WORKERS               &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 20, 1, 1, 15, 1, 1, 1, 1…
+$ NEW_EMPLOYMENT              &lt;dbl&gt; 1, 1, 0, 0, 1, 1, 5, 1, 1, 0, 1, 0, 0, 0, …
+$ CONTINUED_EMPLOYMENT        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 1, 1, …
+$ CHANGE_PREVIOUS_EMPLOYMENT  &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ NEW_CONCURRENT_EMPLOYMENT   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+$ CHANGE_EMPLOYER             &lt;dbl&gt; 0, 0, 0, 1, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, …
+$ AMENDED_PETITION            &lt;dbl&gt; 0, 0, 1, 0, 0, 0, 5, 0, 0, 15, 0, 1, 0, 0,…
+$ FULL_TIME_POSITION          &lt;chr&gt; "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y…
+$ PREVAILING_WAGE             &lt;dbl&gt; 70221.00, 60050.00, 67766.00, 77085.00, 55…
+$ PW_UNIT_OF_PAY              &lt;chr&gt; "Year", "Year", "Year", "Year", "Year", "Y…
+$ PW_WAGE_LEVEL               &lt;chr&gt; "Level I", "Level I", "Level I", "Level II…
+$ PW_SOURCE                   &lt;chr&gt; "OES", "OES", "OES", "OES", "OES", "Other"…
+$ PW_SOURCE_YEAR              &lt;dbl&gt; 2016, 2016, 2016, 2016, 2016, 2015, 2016, …
+$ PW_SOURCE_OTHER             &lt;chr&gt; "OFLC ONLINE DATA CENTER", "OFLC ONLINE DA…
+$ WAGE_RATE_OF_PAY_FROM       &lt;dbl&gt; 80000.00, 65000.00, 67766.00, 80000.00, 55…
+$ WAGE_RATE_OF_PAY_TO         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 95000, 0, 0, 0, 0,…
+$ WAGE_UNIT_OF_PAY            &lt;chr&gt; "Year", "Year", "Year", "Year", "Year", "Y…
+$ H1B_DEPENDENT               &lt;chr&gt; "Y", "N", "N", "Y", "N", "Y", "Y", "N", "N…
+$ WILLFUL_VIOLATOR            &lt;chr&gt; "N", "N", "N", "N", "N", "N", "N", "N", "N…
+$ SUPPORT_H1B                 &lt;chr&gt; "Y", NA, NA, "Y", NA, "Y", "Y", NA, NA, NA…
+$ LABOR_CON_AGREE             &lt;chr&gt; NA, NA, NA, NA, "Y", "Y", NA, NA, "Y", NA,…
+$ PUBLIC_DISCLOSURE_LOCATION  &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
+$ WORKSITE_CITY               &lt;chr&gt; "WOODBRIDGE", "FREMONT", "HARTFORD", "SAN …
+$ WORKSITE_COUNTY             &lt;chr&gt; "MIDDLESEX", "ALAMEDA", "HARTFORD", "CONTR…
+$ WORKSITE_STATE              &lt;chr&gt; "NJ", "CA", "CT", "CA", "GA", "IN", "CA", …
+$ WORKSITE_POSTAL_CODE        &lt;chr&gt; "07095", "94538", "06183", "94583", "30009…
+$ ORIGINAL_CERT_DATE          &lt;date&gt; NA, NA, NA, NA, NA, 2016-03-31, NA, NA, N…</code></pre>
+</div>
+</div>
+</section>
+<section id="narrow-the-dataset" class="level5">
+<h5 class="anchored" data-anchor-id="narrow-the-dataset">Narrow the Dataset</h5>
+<p>After initial glimpse, next will be choose the variables that I am curious about, through the way of using <code>select</code> function and storing them into a new dataframe <code>df1</code>. Further analyis will be conducted on it.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 99,503
+Columns: 14
+$ CASE_STATUS                 &lt;chr&gt; "CERTIFIED", "CERTIFIED", "CERTIFIED-WITHD…
+$ CASE_SUBMITTED              &lt;date&gt; 2017-03-17, 2017-03-25, 2016-03-25, 2017-…
+$ DECISION_DATE               &lt;date&gt; 2017-03-23, 2017-03-30, 2017-04-26, 2017-…
+$ EMPLOYMENT_START_DATE       &lt;date&gt; 2017-09-13, 2017-03-31, 2016-08-26, 2017-…
+$ EMPLOYMENT_END_DATE         &lt;date&gt; 2020-09-12, 2020-03-31, 2019-08-25, 2020-…
+$ EMPLOYER_STATE              &lt;chr&gt; "NJ", "CA", "IL", "CA", "TX", "TX", "MI", …
+$ AGENT_REPRESENTING_EMPLOYER &lt;chr&gt; "Y", "Y", "N", "Y", "N", "N", "N", "Y", "N…
+$ TOTAL_WORKERS               &lt;dbl&gt; 1, 1, 1, 20, 1, 1, 1, 1, 5, 1, 1, 1, 1, 1,…
+$ FULL_TIME_POSITION          &lt;chr&gt; "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y…
+$ PREVAILING_WAGE             &lt;dbl&gt; 70221, 77085, 47382, 73091, 77979, 110219,…
+$ PW_WAGE_LEVEL               &lt;chr&gt; "Level I", "Level II", "Level I", "Level I…
+$ WILLFUL_VIOLATOR            &lt;chr&gt; "N", "N", "N", "N", "N", "N", "N", "N", "N…
+$ SUPPORT_H1B                 &lt;chr&gt; "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y", "Y…
+$ WORKSITE_STATE              &lt;chr&gt; "NJ", "CA", "IN", "CA", "IL", "NY", "PA", …</code></pre>
+</div>
+</div>
+</section>
+<section id="variable-construction" class="level5">
+<h5 class="anchored" data-anchor-id="variable-construction">Variable Construction</h5>
+<p>For analysis purpose, a new variable, <code>daysElapsed</code>, is created. By first calculating the time difference between DECISION_DATE and CASE_SUBMITTED, then converting and attached to the dataframe for further analysis. Additionally, a binary variable <code>decision</code> has been created based on the <code>CASE_STATUS</code>, categorizing cases as either “Certified” or “Other.”</p>
+</section>
+</section>
+<section id="numerical-summary" class="level1">
+<h1>Numerical Summary</h1>
+<section id="analyze-variables" class="level5">
+<h5 class="anchored" data-anchor-id="analyze-variables">Analyze Variables</h5>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+   0.00    6.00    6.00   28.34    6.00 1890.00 </code></pre>
+</div>
+</div>
+<p>Display different quantiles of daysElapsed variable for data filtering.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>5% 
+ 4 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>10% 
+  4 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>90% 
+  7 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% 
+112 </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>99% 
+691 </code></pre>
+</div>
+</div>
+<p>With the quantile check, implementing the cutoff to reduce the effect of outliers.</p>
+<p>The summary of this modified dataframe is provided as below.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Certified     Other 
+    88175     10328 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code> CASE_STATUS        CASE_SUBMITTED       DECISION_DATE       
+ Length:98503       Min.   :2014-11-24   Min.   :2016-10-02  
+ Class :character   1st Qu.:2017-01-23   1st Qu.:2017-02-02  
+ Mode  :character   Median :2017-03-07   Median :2017-03-14  
+                    Mean   :2017-02-11   Mean   :2017-03-02  
+                    3rd Qu.:2017-03-22   3rd Qu.:2017-03-30  
+                    Max.   :2017-06-30   Max.   :2017-09-29  
+ EMPLOYMENT_START_DATE EMPLOYMENT_END_DATE  EMPLOYER_STATE    
+ Min.   :2014-12-01    Min.   :2015-11-07   Length:98503      
+ 1st Qu.:2017-02-20    1st Qu.:2020-01-17   Class :character  
+ Median :2017-06-19    Median :2020-06-05   Mode  :character  
+ Mean   :2017-05-15    Mean   :2020-03-30                     
+ 3rd Qu.:2017-09-01    3rd Qu.:2020-08-30                     
+ Max.   :2018-08-01    Max.   :2021-08-01                     
+ AGENT_REPRESENTING_EMPLOYER TOTAL_WORKERS     FULL_TIME_POSITION
+ Length:98503                Min.   :  1.000   Length:98503      
+ Class :character            1st Qu.:  1.000   Class :character  
+ Mode  :character            Median :  1.000   Mode  :character  
+                             Mean   :  1.874                     
+                             3rd Qu.:  1.000                     
+                             Max.   :110.000                     
+ PREVAILING_WAGE     PW_WAGE_LEVEL      WILLFUL_VIOLATOR   SUPPORT_H1B       
+ Min.   :        0   Length:98503       Length:98503       Length:98503      
+ 1st Qu.:    57762   Class :character   Class :character   Class :character  
+ Median :    66789   Mode  :character   Mode  :character   Mode  :character  
+ Mean   :    69467                                                           
+ 3rd Qu.:    77085                                                           
+ Max.   :201622735                                                           
+ WORKSITE_STATE      daysElapsed       decision        
+ Length:98503       Min.   :  0.00   Length:98503      
+ Class :character   1st Qu.:  6.00   Class :character  
+ Mode  :character   Median :  6.00   Mode  :character  
+                    Mean   : 19.53                     
+                    3rd Qu.:  6.00                     
+                    Max.   :690.00                     </code></pre>
+</div>
+</div>
+</section>
+<section id="numerical-conclusion" class="level5">
+<h5 class="anchored" data-anchor-id="numerical-conclusion">Numerical Conclusion</h5>
+<p>These summaries provide an overview of the dataset after modification. A narrowed dataframe helps indicating the analysis focus, improving the quality of analyses. Having new variables being added and outliers removed help information in the dataset become more organized and reliable.</p>
+</section>
+</section>
+<section id="visual-summary" class="level1">
+<h1>Visual Summary</h1>
+<p>Below is a simple distribution of different case status within in the dataset. It is clear to see that certified status is much higher occur and being documented in the dataset.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>After seeing the distribution of case status, the relationship between the elapsed days from case submission to decision being made and the differcent case statuses draws attention. Following scatter plot depicts that certificated and denied case generally took short time to process. Certified-withdrawn and withdrawn, on the hand, have a large difference across time.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Based on the previous inspection, I would like to further focus on certified and denied status.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Below is a correlation heat map, showing a quick visual assessment of potential relationships and dependencies between numeric variables in the dataframe. The nearly light yellow color across the heatmap indicates that the correlations are close to 0, suggesting relatively weak correlations between the numeric variables. The absence of blue indicates that there is no strong negative correlation exist in dataframe.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Next is a time series plot for decision making over time. While we know that certified is much higher than the rest, this plot reveals the trend of h1b getting certified over the year. There is a huge arrpoval rate from March to April, indicating that there may be a seasonal peak or external factors effect influencing the approval rate during this period.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Below is a grouped barchart that shows the distribution of case decision made across the U.S.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>As I am curious about the each state’s h1b situation, it is surprise to find out that Texas being no.1 for having h1b cases numbers (also with a high certified rate) and New Jersey being no.2, instead of traditionally assumed states like California and New York. The fact that Texas and New Jersey have high H-1B case numbers and certification rates may be influenced by various factors such as the concentration of technology companies or industries with high demand for skilled workers.</p>
+<p>In contrast, the most popular choice for foreign worker’s intended to work is California.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<section id="visualization-conclusion" class="level5">
+<h5 class="anchored" data-anchor-id="visualization-conclusion">Visualization Conclusion</h5>
+<p>This section of analysis has laid the groundwork for a more in-depth analysis of the h1b dataset. Centered on two created variables, <code>daysElapsed</code> and <code>decision</code>, this series of visualization explore the relationships they have with other variables. Further statistical analyses, such as linear and logistic regression, can be employed to quantify relationships and make predictions based on the identified patterns.</p>
+</section>
+</section>
+<section id="linear-regression" class="level1">
+<h1>Linear Regression</h1>
+<p>The visualization explore some relationships between variables within the dataframe. However, without knowing how strong these relationships are, it is time to dive deeper on statistical analysis.</p>
+<p>The regression calculations will be performed using <code>df_lm</code>, a modified version based on visualization result.</p>
+<p>Below is the first model built.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = daysElapsed ~ ., data = df_lm)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-219.79  -16.56    5.02   13.40  528.51 
+
+Coefficients: (1 not defined because of singularities)
+                                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                     3.080e+03  3.274e+01  94.072  &lt; 2e-16 ***
+CASE_STATUSCERTIFIED-WITHDRAWN  1.727e+02  9.187e-01 187.995  &lt; 2e-16 ***
+CASE_STATUSDENIED              -1.405e+00  2.733e+00  -0.514  0.60715    
+CASE_STATUSWITHDRAWN            2.229e+01  1.280e+00  17.408  &lt; 2e-16 ***
+EMPLOYMENT_START_DATE          -1.997e-01  2.545e-03 -78.448  &lt; 2e-16 ***
+EMPLOYMENT_END_DATE             2.103e-02  1.503e-03  13.989  &lt; 2e-16 ***
+EMPLOYER_STATEIL               -3.878e+00  9.860e-01  -3.933 8.39e-05 ***
+EMPLOYER_STATENJ               -6.924e+00  7.920e-01  -8.743  &lt; 2e-16 ***
+EMPLOYER_STATENY               -1.426e+01  1.331e+00 -10.719  &lt; 2e-16 ***
+EMPLOYER_STATETX               -2.419e+00  7.705e-01  -3.140  0.00169 ** 
+AGENT_REPRESENTING_EMPLOYERY    4.061e+00  4.789e-01   8.479  &lt; 2e-16 ***
+TOTAL_WORKERS                  -2.337e-01  4.539e-02  -5.149 2.63e-07 ***
+FULL_TIME_POSITIONY             1.124e+01  2.871e+00   3.916 9.00e-05 ***
+PREVAILING_WAGE                 1.099e-07  2.131e-07   0.516  0.60606    
+PW_WAGE_LEVELLevel II          -1.000e+01  4.960e-01 -20.161  &lt; 2e-16 ***
+PW_WAGE_LEVELLevel III         -1.543e+01  8.356e-01 -18.464  &lt; 2e-16 ***
+PW_WAGE_LEVELLevel IV          -1.202e+01  1.286e+00  -9.344  &lt; 2e-16 ***
+WILLFUL_VIOLATORY              -3.839e+00  5.208e+00  -0.737  0.46102    
+SUPPORT_H1BY                   -6.846e+00  1.101e+00  -6.216 5.16e-10 ***
+WORKSITE_STATEIL               -7.886e-01  8.866e-01  -0.889  0.37376    
+WORKSITE_STATENJ                6.579e+00  7.395e-01   8.896  &lt; 2e-16 ***
+WORKSITE_STATENY                7.636e-01  9.335e-01   0.818  0.41335    
+WORKSITE_STATETX                1.067e+00  6.941e-01   1.538  0.12405    
+decisionOther                          NA         NA      NA       NA    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 42.86 on 37317 degrees of freedom
+Multiple R-squared:  0.6341,    Adjusted R-squared:  0.6339 
+F-statistic:  2940 on 22 and 37317 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>First model returns a relatively good prediction accuracy, with adjusted r-squared at 0.634. However, since there are very low coefficients, the model might be overfitting. Further adjustment is needed.</p>
+<p>Next, I am going to use machine learning method to train the dataframe in return the best numbers of predictors.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found
+
+Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found
+
+Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found
+
+Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found
+
+Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found
+
+Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found
+
+Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found
+
+Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found
+
+Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found
+
+Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found
+
+Warning in leaps.setup(x, y, wt = weights, nbest = nbest, nvmax = nvmax, : 1
+linear dependencies found</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   nvmax     RMSE  Rsquared      MAE     RMSESD RsquaredSD     MAESD
+1      1 48.08880 0.5391509 12.07217   2.124829 0.03027100 0.5962447
+2      2 43.75501 0.6181428 23.29832   1.617028 0.02490557 0.4251212
+3      3 43.59243 0.6210078 23.57913   1.559147 0.02321355 0.4641062
+4      4 97.39196 0.5631224 24.20513 170.566406 0.19707196 3.0867451
+5      5 43.28255 0.6263146 23.44172   1.534432 0.02421372 0.4088012
+6      6 43.12312 0.6291185 23.40159   1.510583 0.02304213 0.3834448
+7      7 43.08708 0.6297252 23.40604   1.513733 0.02333130 0.3872074
+8      8 74.27266 0.5706695 23.95915  98.795264 0.19612785 1.8695729
+9      9 76.11526 0.5706670 24.00176 104.642397 0.19649823 1.9497853
+10    10 73.96788 0.5716954 23.94095  98.037509 0.19637968 1.8682952</code></pre>
+</div>
+</div>
+<p>The method suggests 7 predictors is the right number, with best predictors provided.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 7</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>                   (Intercept) CASE_STATUSCERTIFIED-WITHDRAWN 
+                 3056.58727921                   172.05810747 
+          CASE_STATUSWITHDRAWN          EMPLOYMENT_START_DATE 
+                   22.75670651                    -0.19849176 
+           EMPLOYMENT_END_DATE          PW_WAGE_LEVELLevel II 
+                    0.02142535                   -11.19879813 
+        PW_WAGE_LEVELLevel III          PW_WAGE_LEVELLevel IV 
+                  -16.08271716                   -12.29949947 </code></pre>
+</div>
+</div>
+<section id="improved-linear-regression" class="level5">
+<h5 class="anchored" data-anchor-id="improved-linear-regression">Improved Linear Regression</h5>
+<p>Based on the suggestion received previously, the <code>df_lm</code> is being adjusted and repredict <code>daysElapsed</code> as <code>model1</code>.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = daysElapsed ~ CASE_STATUS + EMPLOYMENT_START_DATE + 
+    EMPLOYMENT_END_DATE + isNY + PW_WAGE_LEVEL, data = df_lm)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-222.35  -16.91    6.24   12.27  533.05 
+
+Coefficients:
+                                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)                     3.062e+03  3.260e+01  93.936   &lt;2e-16 ***
+CASE_STATUSCERTIFIED-WITHDRAWN  1.723e+02  9.151e-01 188.294   &lt;2e-16 ***
+CASE_STATUSDENIED              -1.239e+00  2.733e+00  -0.453     0.65    
+CASE_STATUSWITHDRAWN            2.279e+01  1.282e+00  17.774   &lt;2e-16 ***
+EMPLOYMENT_START_DATE          -1.989e-01  2.545e-03 -78.163   &lt;2e-16 ***
+EMPLOYMENT_END_DATE             2.153e-02  1.496e-03  14.389   &lt;2e-16 ***
+isNY                           -1.059e+01  1.142e+00  -9.271   &lt;2e-16 ***
+PW_WAGE_LEVELLevel II          -1.106e+01  4.876e-01 -22.692   &lt;2e-16 ***
+PW_WAGE_LEVELLevel III         -1.599e+01  8.252e-01 -19.383   &lt;2e-16 ***
+PW_WAGE_LEVELLevel IV          -1.190e+01  1.279e+00  -9.302   &lt;2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 43.02 on 37330 degrees of freedom
+Multiple R-squared:  0.6312,    Adjusted R-squared:  0.6312 
+F-statistic:  7100 on 9 and 37330 DF,  p-value: &lt; 2.2e-16</code></pre>
+</div>
+</div>
+</section>
+<section id="regression-conclusion" class="level5">
+<h5 class="anchored" data-anchor-id="regression-conclusion">Regression Conclusion</h5>
+<p>Overall, the statistical analysis thus far indicates that the best variables for anticipating dayElapsed will be case status, employment start and end date, prevailing wage rate level and the employer state. Despite the summary shows a pretty good result, the model will need the diagnostics plots to further check the quality, which will be performed in the next section.</p>
+</section>
+</section>
+<section id="linear-regression-diagnostics" class="level1">
+<h1>Linear Regression Diagnostics</h1>
+<p>Below are the set of diagnostic plots for the regression model.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Each black dot on the Residual vs.&nbsp;Fitted plot represents a residual value, and the red line represents the fitted linear model. The red line does not display an overwhelming curve, which indicates that this can be locally weighted scatterplot smoothing. And it suggests that model might not be appropriate for the entire range of data. The spread of residuals above and below is not even, suggesting a potential heteroscedasticity. Furthermore, as there are some scatter points being spot on plot that are display away from the majority, which could be outliers, and a short negative-sloping line formation below the red line that might have a disproportionate impact on model fit.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The Q-Q plot serves to detect a normal distribution of residuals. The results of our Q-Q plot show that the model is not well fitted at each end. In other words, the residuals do not follow the straight line enough to make accurate predictions of lowest and highest day elapsed. The model over-predicts short day elapsed and under-predicts high day elapsed. The departure of points from the reference line at the tails indicates that our model may deviate from a normal distribution. It also can spot that there are few points on the top right are more off than the rest of the residuals, which tells us that another reason that cause the non-normal distribution to occur might be the existence of strong effect outliers which leads the model off normality.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The plot shows a not fully constant spread of residuals along the ranges of predictors. Notice that the red line is not smooth and have two obvious curve, which indicates that there are influential points exist. The v-shape skew on the left proves this. Furthermore, the points do not display uniform dispersion along the horizontal axis, further supporting the diagnosis of heteroscedasticity.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Residual vs.&nbsp;Leverage plot will show influential points that might need to be removed from the model. The red line goes smooth, suggesting that the spread of residuals is relatively consistent across different levels of leverage. However, despite few points did away the majority, the lack of Cook’s distance line indicates that they are not likely to be high influential.</p>
+<section id="diagnostic-conclusion" class="level5">
+<h5 class="anchored" data-anchor-id="diagnostic-conclusion">Diagnostic Conclusion</h5>
+<p>In conclusion, the diagnostic plots provide valuable insights into the model’s performance and potential issues. With the model has a good R-squared and F-statistic, it shows that it can predict the dayElapsed of a h1b case with some certainty. However, the plots also collectively reveal potential issues with non-linearity and heteroscedasticity within the dataframe. But the model also able to demonstrates stability in certain aspects, with no high-leverage points negatively influencing our model. For current dataframe, this is all we can get. To enhance model accuracy and reliability, future improvements may involve the inclusion of additional variables not considered in the current analysis.</p>
+</section>
+</section>
+<section id="logistic-regression" class="level1">
+<h1>Logistic Regression</h1>
+<p>After performing a linear regression to explore the relationship within the dataframe, next will be the application of logistic regression. It aims to unravel insights related to the binary outcome variable, <code>decision</code>.</p>
+<p>The logistic regression calculations will be performed using <code>df_lg</code>, a modified version based on previous work and result.</p>
+<p>Below is our first logistic regression model. We will split the dataset into train and test. Using <code>glm</code> to train data and <code>predict</code> to test.</p>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = decision ~ ., family = "binomial", data = train_data)
+
+Coefficients: (1 not defined because of singularities)
+                               Estimate Std. Error z value Pr(&gt;|z|)    
+(Intercept)                   2.205e+01  9.296e+00   2.372   0.0177 *  
+CASE_SUBMITTED                1.064e-01  4.605e-03  23.108  &lt; 2e-16 ***
+DECISION_DATE                -1.073e-01  4.558e-03 -23.547  &lt; 2e-16 ***
+EMPLOYMENT_START_DATE        -1.027e-03  4.614e-04  -2.225   0.0260 *  
+EMPLOYMENT_END_DATE           7.972e-04  1.586e-04   5.026 5.01e-07 ***
+EMPLOYER_STATEIL              1.592e-01  1.330e-01   1.197   0.2312    
+EMPLOYER_STATENJ             -8.799e-02  1.012e-01  -0.870   0.3844    
+EMPLOYER_STATENY             -2.636e-01  1.684e-01  -1.565   0.1175    
+EMPLOYER_STATETX              6.877e-01  1.082e-01   6.356 2.07e-10 ***
+AGENT_REPRESENTING_EMPLOYERY  1.239e-01  6.300e-02   1.967   0.0492 *  
+TOTAL_WORKERS                 2.321e-02  9.211e-03   2.520   0.0117 *  
+FULL_TIME_POSITIONY          -3.594e-01  3.726e-01  -0.965   0.3347    
+PREVAILING_WAGE               7.064e-06  1.589e-06   4.446 8.74e-06 ***
+PW_WAGE_LEVELLevel II         1.279e-01  7.100e-02   1.802   0.0716 .  
+PW_WAGE_LEVELLevel III        1.335e-01  1.335e-01   1.000   0.3172    
+PW_WAGE_LEVELLevel IV        -1.276e-01  1.917e-01  -0.666   0.5056    
+WILLFUL_VIOLATORY            -7.528e-01  4.357e-01  -1.728   0.0840 .  
+SUPPORT_H1BY                  2.153e-01  1.403e-01   1.535   0.1249    
+WORKSITE_STATEIL              1.781e-01  1.243e-01   1.433   0.1518    
+WORKSITE_STATENJ              1.583e-01  9.859e-02   1.605   0.1084    
+WORKSITE_STATENY              1.493e-01  1.266e-01   1.180   0.2380    
+WORKSITE_STATETX             -7.678e-02  9.708e-02  -0.791   0.4290    
+daysElapsed                          NA         NA      NA       NA    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for binomial family taken to be 1)
+
+    Null deviance: 18164.0  on 26138  degrees of freedom
+Residual deviance:  9313.7  on 26117  degrees of freedom
+AIC: 9357.7
+
+Number of Fisher Scoring iterations: 9</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in predict.lm(object, newdata, se.fit, scale = 1, type = if (type == :
+prediction from rank-deficient fit; attr(*, "non-estim") has doubtful cases</code></pre>
+</div>
+</div>
+<p>The metrix tells that the model correctly predicted 740 instances where the application was not approved and incorrectly predicted 497 instances as approved when they were not. It also correctly identified all instances where the application was approved, which are 9964 instances.</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>      Predicted
+Actual    0    1
+     0  740  497
+     1    0 9964</code></pre>
+</div>
+</div>
+<p>Next I will use Receiver Operating Characteristic (ROC) curve to further evaluate the model’s performance.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="finalexam_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The notable skew for ROC curve shows that the model has varying levels of sensitivity and specificity at different probability thresholds. An AUC of 0.778 is considered as reasonably good as it is intended to show the overall performance of the model across different probability thresholds. A higher AUC suggests that the model has strong discrimination ability across diverse probability thresholds. The nearly horizontal line after X = 0.75 suggests that as probability threshold for classifying an instance increase as positive, the false positive rate remains relatively constant, and the model maintains a high true positive rate. It indicates that the model maintains a high true positive rate.</p>
+<section id="logistic-regression-conclusion" class="level5">
+<h5 class="anchored" data-anchor-id="logistic-regression-conclusion">Logistic Regression Conclusion</h5>
+<p>With a series of analysis, from splitting, training data to aesessing the performance, the logistic regression model exhibits proficiency in correctly identifying h1b application status. The model also has a good discrimination ability across various probability thresholds. However, while the model demonstrates promising performance, continuous refinement and optimization are needed as they could further enhance its predictive capabilities.</p>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>The goal of this analysis is to explore the 2017 h1b dataset and identify the relationships among variables within the dataset. With an ultimate focus how complex factors affect the application waiting time and decision received, two variables <code>daysElasped</code> and <code>decision</code> were created. By selecting interested variables, the data preparation section ensured a focused and clean dataset for subsequent analyses.</p>
+<p>The numerical summary offered insights into the distribution and characteristics of the <code>daysElapsed</code>. Further implementing cutoff help to remove the outliers from the dataset, reducing the potential influence and issues caused by these points. Visual summaries provided a graphical representation of the dataset, including the distribution of case statuses, the relationship between different variables, with centered on<code>daysElapsed</code> and <code>decision</code> variable.</p>
+<p>The linear regression analysis attempted to predict the <code>daysElapsed</code> variable based on several predictors. While the initial model showed promise, diagnostic plots highlighted potential issues such as non-linearity and heteroscedasticity. The model was refined using machine learning methods, improving its accuracy. The logistic regression section successfully modeled the binary outcome variable <code>decision</code>, exhibiting good discrimination ability and overall performance.</p>
+<p>In conclusion, the analysis provided valuable insights into the H-1B dataset, shedding light on the factors influencing the processing time and the likelihood of approval. Case status and the state employer located has relatively strong influence on the h1b application. While there are obstacles occurred,</p>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

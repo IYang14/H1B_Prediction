@@ -1,0 +1,364 @@
+---
+title: "Final Exam"
+date: December 11, 2023
+author: "Isabel Yang"
+format: html
+editor: visual
+---
+
+# Introduction
+
+The h1b visa program is a critical pathway for skilled foreign workers to contribute their expertise to the U.S. workforce. This data analysis explores the 2017 h1b dataset and aims to supply an understanding of the information of the unveil pattern, providing insights for stakeholders. It comprises six distinct sections, data preparation, mumerical summary, visual summary, linear regression, linear regression diagnostics and Logistic regression. The overall objective is to determine if we can reasonably predict the processing time and likelihood of approval.
+
+# Data Preparation
+
+##### Load Global Functions and Data
+
+The analysis begin by loading essential packages, including tidyverse, ggplot2 (and more), which provide a set of functions for data manipulation and visualization.
+
+```{r}
+library(tidyverse)
+library(ggplot2)
+library(reshape2)
+library(dplyr)
+library(caret)
+library(forcats)
+library(MASS)
+library(glmnet)
+library(pROC)
+#| label: optionsSetup
+#| include=FALSE
+knitr::opts_chunk$set(
+  message=FALSE,
+  echo=FALSE
+)
+```
+
+```{r}
+df <- read_tsv("/home/mm223266/data/h1b-2017-half.tsv")
+```
+
+##### Preliminary Data Exploration
+
+For reference, this is how the orginal dataset looks like.
+
+```{r}
+glimpse(df)
+```
+
+##### Narrow the Dataset
+
+After initial glimpse, next will be choose the variables that I am curious about, through the way of using `select` function and storing them into a new dataframe `df1`. Further analyis will be conducted on it.
+
+```{r}
+df1 <- df %>%
+  dplyr::select(CASE_STATUS, CASE_SUBMITTED, DECISION_DATE, EMPLOYMENT_START_DATE, EMPLOYMENT_END_DATE, EMPLOYER_STATE, AGENT_REPRESENTING_EMPLOYER, TOTAL_WORKERS, FULL_TIME_POSITION, PREVAILING_WAGE, PW_WAGE_LEVEL, WILLFUL_VIOLATOR, SUPPORT_H1B, WORKSITE_STATE) 
+df1 <- na.omit(df1)
+```
+
+```{r}
+glimpse(df1)
+```
+
+##### Variable Construction
+
+For analysis purpose, a new variable, `daysElapsed`, is created. By first calculating the time difference between DECISION_DATE and CASE_SUBMITTED, then converting and attached to the dataframe for further analysis. Additionally, a binary variable `decision` has been created based on the `CASE_STATUS`, categorizing cases as either "Certified" or "Other."
+
+```{r}
+timediff <- df1$DECISION_DATE - df1$CASE_SUBMITTED
+df1$daysElapsed <- as.integer(timediff)
+df1$decision <- ifelse(df1$CASE_STATUS == "CERTIFIED", "Certified", "Other")
+```
+
+# Numerical Summary
+
+##### Analyze Variables
+
+```{r}
+summary(df1$daysElapsed)
+```
+
+Display different quantiles of daysElapsed variable for data filtering.
+
+```{r}
+quantile(df1$daysElapsed, probs = 0.05)
+quantile(df1$daysElapsed, probs = 0.1)
+quantile(df1$daysElapsed, probs = 0.9)
+quantile(df1$daysElapsed, probs = 0.95)
+quantile(df1$daysElapsed, probs = 0.99)
+```
+
+With the quantile check, implementing the cutoff to reduce the effect of outliers.
+
+```{r}
+df1 <- df1 |>
+  filter(daysElapsed<quantile(df1$daysElapsed, probs = 0.99))
+```
+
+The summary of this modified dataframe is provided as below.
+
+```{r}
+table(df1$decision)
+```
+
+```{r}
+summary(df1)
+```
+
+##### Numerical Conclusion
+
+These summaries provide an overview of the dataset after modification. A narrowed dataframe helps indicating the analysis focus, improving the quality of analyses. Having new variables being added and outliers removed help information in the dataset become more organized and reliable.
+
+# Visual Summary
+
+Below is a simple distribution of different case status within in the dataset. It is clear to see that certified status is much higher occur and being documented in the dataset.
+
+```{r}
+ggplot(df1, aes(x = CASE_STATUS, fill = CASE_STATUS)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(size = 6)) +
+  labs(title = "Distribution of CASE_STATUS") +
+  scale_y_continuous(labels = scales::number_format(scale = 1))
+```
+
+After seeing the distribution of case status, the relationship between the elapsed days from case submission to decision being made and the differcent case statuses draws attention. Following scatter plot depicts that certificated and denied case generally took short time to process. Certified-withdrawn and withdrawn, on the hand, have a large difference across time.
+
+```{r}
+ggplot(df1, aes(x = CASE_STATUS, y = daysElapsed, color = CASE_STATUS)) +
+  geom_point() +
+  theme(axis.text.x = element_text(size = 6)) +
+  labs(title = "Scatter plot of daysElapsed vs CASE_STATUS")
+```
+
+Based on the previous inspection, I would like to further focus on certified and denied status.
+
+```{r}
+filtered_df <- df1[df1$CASE_STATUS %in% c('CERTIFIED', 'DENIED'), ]
+ggplot(filtered_df, aes(x = CASE_STATUS, y = daysElapsed, color = CASE_STATUS)) +
+  geom_violin() +
+  scale_y_continuous(breaks = seq(0, max(filtered_df$daysElapsed), by = 1)) +
+  labs(title = "Scatter plot of daysElapsed vs CASE_STATUS")
+```
+
+Below is a correlation heat map, showing a quick visual assessment of potential relationships and dependencies between numeric variables in the dataframe. The nearly light yellow color across the heatmap indicates that the correlations are close to 0, suggesting relatively weak correlations between the numeric variables. The absence of blue indicates that there is no strong negative correlation exist in dataframe.
+
+```{r}
+correlation_matrix <- cor(df1 %>% select_if(is.numeric))
+melted_correlation <- melt(correlation_matrix)
+ggplot(melted_correlation, aes(Var1, Var2, fill = value)) +
+  geom_tile(color = "black") +
+  geom_text(aes(label = round(value, 2)), vjust = 1) +
+  scale_fill_gradient2(low = "blue", mid = "lightyellow", high = "darkred", midpoint = 0, limit = c(-1, 1), space = "Lab", na.value = "grey") +
+  theme_minimal() +
+  coord_fixed() +
+    theme(axis.text.x = element_text(size = 8)) +
+  labs(title = "Correlation Heatmap for Numeric Variables",
+       x = "Variables",
+       y = "Variables")
+```
+
+Next is a time series plot for decision making over time. While we know that certified is much higher than the rest, this plot reveals the trend of h1b getting certified over the year. There is a huge arrpoval rate from March to April, indicating that there may be a seasonal peak or external factors effect influencing the approval rate during this period.
+
+```{r}
+df3 <- df
+df3$daysElapsed <- as.integer(df3$DECISION_DATE - df3$CASE_SUBMITTED)
+df3$decision <- ifelse(df3$CASE_STATUS == "CERTIFIED", "Certified", "Other")
+ggplot(df3, aes(x = DECISION_DATE, fill = decision)) +
+  geom_bar() +
+  labs(title = "Decision Over Time")
+```
+
+Below is a grouped barchart that shows the distribution of case decision made across the U.S.
+
+```{r}
+ggplot(df1, aes(x = EMPLOYER_STATE, fill = decision)) +
+  geom_bar() +
+  labs(title = "Distribution of Decision by EMPLOYER_STATE",
+       x = "EMPLOYER_STATE",
+       y = "Count",
+       fill = "Decision") +
+  theme(axis.text.x = element_text(angle = 45, size = 6, hjust = 1)) +
+  scale_fill_manual(values = c("#0072B2", "#D55E00"))
+```
+
+As I am curious about the each state's h1b situation, it is surprise to find out that Texas being no.1 for having h1b cases numbers (also with a high certified rate) and New Jersey being no.2, instead of traditionally assumed states like California and New York. The fact that Texas and New Jersey have high H-1B case numbers and certification rates may be influenced by various factors such as the concentration of technology companies or industries with high demand for skilled workers.
+
+In contrast, the most popular choice for foreign worker's intended to work is California.
+
+```{r}
+ggplot(df1, aes(x = WORKSITE_STATE, fill = decision)) +
+  geom_bar() +
+  labs(title = "Distribution of Decision by WORKSITE_STATE",
+       x = "WORKSITE_STATE",
+       y = "Count",
+       fill = "Decision") +
+  theme(axis.text.x = element_text(angle = 45, size = 6, hjust = 1)) +
+  scale_fill_manual(values = c("#0072B2", "#D55E00"))
+```
+
+##### Visualization Conclusion
+
+This section of analysis has laid the groundwork for a more in-depth analysis of the h1b dataset. Centered on two created variables, `daysElapsed` and `decision`, this series of visualization explore the relationships they have with other variables. Further statistical analyses, such as linear and logistic regression, can be employed to quantify relationships and make predictions based on the identified patterns.
+
+# Linear Regression
+
+The visualization explore some relationships between variables within the dataframe. However, without knowing how strong these relationships are, it is time to dive deeper on statistical analysis.
+
+The regression calculations will be performed using `df_lm`, a modified version based on visualization result.
+
+```{r}
+selected_states <- c("CA", "IL", "NJ", "NY", "TX")
+df_lm <- df1[df1$EMPLOYER_STATE %in% selected_states & df1$WORKSITE_STATE %in% selected_states, ]
+df_lm <- df_lm[, !(names(df_lm) %in% c("DECISION_DATE", "CASE_SUBMITTED"))]
+```
+
+Below is the first model built.
+
+```{r}
+model <- lm(daysElapsed ~., data = df_lm)
+summary(model)
+```
+
+First model returns a relatively good prediction accuracy, with adjusted r-squared at 0.634. However, since there are very low coefficients, the model might be overfitting. Further adjustment is needed.
+
+Next, I am going to use machine learning method to train the dataframe in return the best numbers of predictors.
+
+```{r}
+train.control <- trainControl(method = "cv", number = 10)
+m <- train(daysElapsed ~ ., data = df_lm,
+                    method = "leapSeq",
+                    tuneGrid = data.frame(nvmax = 1:10),
+                    trControl = train.control
+                    )
+m$results
+```
+
+The method suggests 7 predictors is the right number, with best predictors provided.
+
+```{r}
+m$bestTune[,1]
+```
+
+```{r}
+coef(m$finalModel,m$bestTune[,1])
+```
+
+##### Improved Linear Regression
+
+Based on the suggestion received previously, the `df_lm` is being adjusted and repredict `daysElapsed` as `model1`.
+
+```{r}
+df_lm$isNY <- as.numeric(df_lm$EMPLOYER_STATE == "NY")
+```
+
+```{r}
+model1 <- lm(daysElapsed ~ CASE_STATUS + EMPLOYMENT_START_DATE + EMPLOYMENT_END_DATE + isNY + PW_WAGE_LEVEL, data = df_lm)
+summary(model1)
+```
+
+##### Regression Conclusion
+
+Overall, the statistical analysis thus far indicates that the best variables for anticipating dayElapsed will be case status, employment start and end date, prevailing wage rate level and the employer state. Despite the summary shows a pretty good result, the model will need the diagnostics plots to further check the quality, which will be performed in the next section.
+
+# Linear Regression Diagnostics
+
+Below are the set of diagnostic plots for the regression model.
+
+```{r}
+# Residuals vs. Fitted
+plot(model1, which = 1)
+```
+
+Each black dot on the Residual vs. Fitted plot represents a residual value, and the red line represents the fitted linear model. The red line does not display an overwhelming curve, which indicates that this can be locally weighted scatterplot smoothing. And it suggests that model might not be appropriate for the entire range of data. The spread of residuals above and below is not even, suggesting a potential heteroscedasticity. Furthermore, as there are some scatter points being spot on plot that are display away from the majority, which could be outliers, and a short negative-sloping line formation below the red line that might have a disproportionate impact on model fit.
+
+```{r}
+# Q-Q Residuals
+plot(model1, which = 2)
+```
+
+The Q-Q plot serves to detect a normal distribution of residuals. The results of our Q-Q plot show that the model is not well fitted at each end. In other words, the residuals do not follow the straight line enough to make accurate predictions of lowest and highest day elapsed. The model over-predicts short day elapsed and under-predicts high day elapsed. The departure of points from the reference line at the tails indicates that our model may deviate from a normal distribution. It also can spot that there are few points on the top right are more off than the rest of the residuals, which tells us that another reason that cause the non-normal distribution to occur might be the existence of strong effect outliers which leads the model off normality.
+
+```{r}
+# Scale-Location
+plot(model1, which = 3)
+```
+
+The plot shows a not fully constant spread of residuals along the ranges of predictors. Notice that the red line is not smooth and have two obvious curve, which indicates that there are influential points exist. The v-shape skew on the left proves this. Furthermore, the points do not display uniform dispersion along the horizontal axis, further supporting the diagnosis of heteroscedasticity.
+
+```{r}
+# Residuals vs. Leverage
+plot(model1, which = 5)
+```
+
+Residual vs. Leverage plot will show influential points that might need to be removed from the model. The red line goes smooth, suggesting that the spread of residuals is relatively consistent across different levels of leverage. However, despite few points did away the majority, the lack of Cook's distance line indicates that they are not likely to be high influential.
+
+##### Diagnostic Conclusion
+
+In conclusion, the diagnostic plots provide valuable insights into the model's performance and potential issues. With the model has a good R-squared and F-statistic, it shows that it can predict the dayElapsed of a h1b case with some certainty. However, the plots also collectively reveal potential issues with non-linearity and heteroscedasticity within the dataframe. But the model also able to demonstrates stability in certain aspects, with no high-leverage points negatively influencing our model. For current dataframe, this is all we can get. To enhance model accuracy and reliability, future improvements may involve the inclusion of additional variables not considered in the current analysis.
+
+# Logistic Regression
+
+After performing a linear regression to explore the relationship within the dataframe, next will be the application of logistic regression. It aims to unravel insights related to the binary outcome variable, `decision`.
+
+The logistic regression calculations will be performed using `df_lg`, a modified version based on previous work and result.
+
+```{r}
+df_lg <- df1
+df_lg <- df_lg[, !(names(df_lg) %in% c("decision"))]
+df_lg$decision <- as.factor(ifelse(df_lg$CASE_STATUS == "CERTIFIED", 1, 0))
+
+df_lg <- df_lg[df_lg$EMPLOYER_STATE %in% selected_states & df_lg$WORKSITE_STATE %in% selected_states, ]
+df_lg <- df_lg[, !(names(df_lg) %in% c("CASE_STATUS"))]
+```
+
+Below is our first logistic regression model. We will split the dataset into train and test. Using `glm` to train data and `predict` to test.
+
+```{r}
+set.seed(123) 
+split_index <- createDataPartition(df_lg$decision, p = 0.7, list = FALSE)
+train_data <- df_lg[split_index, ]
+test_data <- df_lg[-split_index, ]
+
+glm_model <- glm(decision ~ ., family = "binomial", data = train_data)
+summary(glm_model)
+```
+
+```{r}
+predictions_test_glm <- predict(glm_model, newdata = test_data, type = "response")
+predicted_classes_test_glm <- ifelse(predictions_test_glm > 0.5, 1, 0)
+```
+
+The metrix tells that the model correctly predicted 740 instances where the application was not approved and incorrectly predicted 497 instances as approved when they were not. It also correctly identified all instances where the application was approved, which are 9964 instances.
+
+```{r}
+```
+
+
+```{r}
+confusion_matrix_test_glm <- table(Actual = test_data$decision, Predicted = predicted_classes_test_glm)
+print(confusion_matrix_test_glm)
+```
+
+Next I will use Receiver Operating Characteristic (ROC) curve to further evaluate the model's performance.
+
+```{r}
+roc_curve_glm <- roc(test_data$decision, predictions_test_glm)
+auc_value_glm <- auc(roc_curve_glm)
+plot(roc_curve_glm, main = paste("ROC Curve (AUC =", auc_value_glm, ")"))
+```
+
+The notable skew for ROC curve shows that the model has varying levels of sensitivity and specificity at different probability thresholds. An AUC of 0.778 is considered as reasonably good as it is intended to show the overall performance of the model across different probability thresholds. A higher AUC suggests that the model has strong discrimination ability across diverse probability thresholds. The nearly horizontal line after X = 0.75 suggests that as probability threshold for classifying an instance increase as positive, the false positive rate remains relatively constant, and the model maintains a high true positive rate. It indicates that the model maintains a high true positive rate.
+
+##### Logistic Regression Conclusion
+
+With a series of analysis, from splitting, training data to aesessing the performance, the logistic regression model exhibits proficiency in correctly identifying h1b application status. The model also has a good discrimination ability across various probability thresholds. However, while the model demonstrates promising performance, continuous refinement and optimization are needed as they could further enhance its predictive capabilities. 
+
+# Conclusion
+
+The goal of this analysis is to explore the 2017 h1b dataset and identify the relationships among variables within the dataset. With an ultimate focus how complex factors affect the application waiting time and decision received, two variables `daysElasped` and `decision` were created. By selecting interested variables, the data preparation section ensured a focused and clean dataset for subsequent analyses.
+
+The numerical summary offered insights into the distribution and characteristics of the `daysElapsed`. Further implementing cutoff help to remove the outliers from the dataset, reducing the potential influence and issues caused by these points. Visual summaries provided a graphical representation of the dataset, including the distribution of case statuses, the relationship between different variables, with centered on`daysElapsed` and `decision` variable. 
+
+The linear regression analysis attempted to predict the `daysElapsed` variable based on several predictors. While the initial model showed promise, diagnostic plots highlighted potential issues such as non-linearity and heteroscedasticity. The model was refined using machine learning methods, improving its accuracy. The logistic regression section successfully modeled the binary outcome variable `decision`, exhibiting good discrimination ability and overall performance.
+
+In conclusion, the analysis provided valuable insights into the H-1B dataset, shedding light on the factors influencing the processing time and the likelihood of approval. Case status and the state employer located has relatively strong influence on the h1b application. While there are obstacles occurred, 
